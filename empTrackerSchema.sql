@@ -48,34 +48,34 @@ VALUES ("Communications");
 
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Susan", "Smith", 12, 34 );
+VALUES ("Susan", "Smith", 1, 2 );
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Brian", "Travis", 13, 45);
+VALUES ("Brian", "Travis", 2, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Chops", "McGoven", 23, 67);
+VALUES ("Chops", "McGoven", 3, 5);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Beth", "Tranh", 34, 67);
+VALUES ("Beth", "Tranh", 2, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Cheryl", "Ng", 45, 78);
+VALUES ("Cheryl", "Ng", 5, null);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Senior Engineer", "90000", 40);
+VALUES ("Senior Engineer", "90000", 5);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Junior Engineer", "60000", 45);
+VALUES ("Junior Engineer", "60000", 4);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("CFO", "100000", 60);
+VALUES ("CFO", "100000", 30);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Communications Manager", "50000", 62);
+VALUES ("Communications Manager", "50000", 2);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Administration", "50000", 47);
+VALUES ("Administration", "50000", 1);
 
 
 
