@@ -12,7 +12,7 @@ CREATE TABLE department(
 CREATE TABLE role(
   id INT NOT NULL AUTO_INCREMENT,
   role_title VARCHAR(30) NOT NULL,
-  salary DECIMAL(10,4) NULL,
+  salary DECIMAL(10,0) NULL,
   dept_id INT default 0,
   PRIMARY KEY (id)
 );
@@ -69,13 +69,35 @@ INSERT INTO role (role_title, salary, dept_id)
 VALUES ("Junior Engineer", "60000", 4);
 
 INSERT INTO role (role_title, salary, dept_id)
-VALUES ("CFO", "100000", 30);
+VALUES ("CFO", "100000", 4);
 
 INSERT INTO role (role_title, salary, dept_id)
 VALUES ("Communications Manager", "50000", 2);
 
 INSERT INTO role (role_title, salary, dept_id)
 VALUES ("Administration", "50000", 1);
+
+SELECT first_name, last_name, dept_name 
+FROM employee
+LEFT JOIN department ON employee.id = department.id;
+
+SELECT 
+    id
+    first_name,
+    last_name,
+    dept_name,
+   role_title,
+    salary,
+    manager_id
+FROM
+    employee
+INNER JOIN
+    department USING (id)
+INNER JOIN
+    role USING (id)
+ORDER BY 
+    id, 
+    role_id;
 
 
 
