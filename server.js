@@ -59,23 +59,34 @@ const start = () => {
         
 
 
-const viewEmployees = () => {
+        const viewEmployees = async () => {
     
-    // query the database for all items being auctioned
-    connection.query('SELECT * FROM employee', (err, results) => {
+            // query the database for all items being auctioned
+            const connect = await connection.query('SELECT * FROM employee', (err, results) => {
+                if (err) throw err;
+                console.table(results);
+            })
+           
+           console.log(connect)
+           start();
+        }
 
-        console.log(results.first_name)
-        if (err) throw err;
-        var values = [
-            [results.firstName, results.lastName],
-            ['joe', 30]
-          ];
-    //   print table of all employees
-    console.table(['first name', 'last name'], values);
-    });
+// const viewEmployees = () => {
+    
+//     // query the database for all items being auctioned
+//     connection.query('SELECT * FROM employee', (err, results) => {
+//         if (err) throw err;
+//         console.table(results);
+//     })
+//     .then((results) => {
+//     start();
 
-    start();
-};
+//     })
+   
+   
+// }
+
+
 
 
 
