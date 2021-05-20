@@ -56,7 +56,7 @@ VALUE ("Software Engineer", 120000, 2);
 INSERT INTO role (role_title, salary, dept_id)
 VALUE ("Junior Engineer", 700000, 2);
 INSERT INTO role (role_title, salary, dept_id)
-VALUE ("Communications director", 110000, 5);
+VALUE ("Communications Director", 110000, 5);
 INSERT INTO role (role_title, salary, dept_id)
 VALUE ("Sales Assistant", 60000, 1);
 
