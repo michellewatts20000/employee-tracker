@@ -3,103 +3,96 @@ CREATE DATABASE empTracker_DB;
 
 USE empTracker_DB;
 
-CREATE TABLE department(
-  id INT NOT NULL AUTO_INCREMENT,
-  dept_name VARCHAR(30) NOT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE department (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  dept_name VARCHAR(30)
 );
 
-CREATE TABLE role(
-  id INT NOT NULL AUTO_INCREMENT,
-  role_title VARCHAR(30) NOT NULL,
-  salary DECIMAL(10,0) NULL,
-  dept_id INT default 0,
-  PRIMARY KEY (id)
+CREATE TABLE role (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  role_title VARCHAR(30),
+  salary DECIMAL,
+  dept_id INT,
+  FOREIGN KEY (dept_id) REFERENCES department(id)
 );
 
-CREATE TABLE employee(
-  id INT NOT NULL AUTO_INCREMENT,
-  first_name VARCHAR(30) NOT NULL,
-  last_name VARCHAR(30) NOT NULL,
-  role_id INT default 0,
-  manager_id INT default 0,
-  PRIMARY KEY (id)
+CREATE TABLE employee (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(30),
+  last_name VARCHAR(30),
+  manager_id INT,
+  role_id INT,
+  FOREIGN KEY (role_id) REFERENCES role(id),
+  FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
+
+
+INSERT INTO department (dept_name)
+VALUE ("Sales");
+INSERT INTO department (dept_name)
+VALUE ("Engineering");
+INSERT INTO department (dept_name)
+VALUE ("Finance");
+INSERT INTO department (dept_name)
+VALUE ("Legal");
+INSERT INTO department (dept_name)
+VALUE ("Communications");
+INSERT INTO department (dept_name)
+VALUE ("Administration");
+
+
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Lead Engineer", 150000, 2);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Legal Team Lead", 130000, 4);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Accountant", 100000, 3);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Administration", 80000, 6);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Sales Lead", 110000, 1);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Software Engineer", 120000, 2);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Junior Engineer", 700000, 2);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Communications director", 110000, 5);
+INSERT INTO role (role_title, salary, dept_id)
+VALUE ("Sales Assistant", 60000, 1);
+
+
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Susan", "Cain", null, 1);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Brene", "Toll", null, 2);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Chops","McGoven",null,8);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Beth", "Tranh", null, 5);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("George", "Tolkin", null, 3);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Travis", "McKracken", null, 4);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Cheryl", "Ng", 4, 9);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Brian", "Grant", 1, 7);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Tom", "Churchill", 1, 6);
+
 
 SELECT * FROM department;
-select * from role;
-select * from employee;
+
+SELECT * FROM role;
 
 
-INSERT INTO department (dept_name)
-VALUES ("Administration");
 
-INSERT INTO department (dept_name)
-VALUES ("Engineering");
-
-INSERT INTO department (dept_name)
-VALUES ("Legal");
-
-INSERT INTO department (dept_name)
-VALUES ("Finance");
-
-INSERT INTO department (dept_name)
-VALUES ("Communications");
-
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Susan", "Smith", 1, 2 );
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Brian", "Travis", 2, 4);
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Chops", "McGoven", 3, 5);
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Beth", "Tranh", 2, null);
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Cheryl", "Ng", 5, null);
-
-INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Senior Engineer", "90000", 5);
-
-INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Junior Engineer", "60000", 4);
-
-INSERT INTO role (role_title, salary, dept_id)
-VALUES ("CFO", "100000", 4);
-
-INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Communications Manager", "50000", 2);
-
-INSERT INTO role (role_title, salary, dept_id)
-VALUES ("Administration", "50000", 1);
-
-SELECT first_name, last_name, dept_name 
-FROM employee
-LEFT JOIN department ON employee.id = department.id;
-
-SELECT 
-    id
-    first_name,
-    last_name,
-    dept_name,
-   role_title,
-    salary,
-    manager_id
-FROM
-    employee
-INNER JOIN
-    department USING (id)
-INNER JOIN
-    role USING (id)
-ORDER BY 
-    id, 
-    role_id;
-
-
+SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager
+FROM employee e1
+INNER JOIN role ON role.id = e1.role_id 
+INNER JOIN department ON department.id = role.dept_id 
+LEFT JOIN employee e2 ON e2.id = e1.manager_id;
+    
 
 
 
