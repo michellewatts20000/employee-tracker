@@ -48,7 +48,7 @@ VALUE ("Legal Team Lead", 130000, 4);
 INSERT INTO role (role_title, salary, dept_id)
 VALUE ("Accountant", 100000, 3);
 INSERT INTO role (role_title, salary, dept_id)
-VALUE ("Administration", 80000, 6);
+VALUE ("Admin Coordinator", 80000, 6);
 INSERT INTO role (role_title, salary, dept_id)
 VALUE ("Sales Lead", 110000, 1);
 INSERT INTO role (role_title, salary, dept_id)
