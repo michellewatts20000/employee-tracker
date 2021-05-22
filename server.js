@@ -76,22 +76,30 @@ const addEmployees = () => {
         message: 'What is their surname?',
       },
       {
-        name: 'role_id',
-        type: 'input',
-        message: 'What is their role ID?',
+        name: 'role',
+        type: 'list',
+        message: 'What is their role?',
+        choices: selectRole()
       },
       {
         name: 'manager_id',
-        type: 'input',
-        message: 'What is their manager ID (hit enter if none)?',
+        type: 'list',
+        message: 'Who is their manager?',
+        choices: [
+          "No Manager",
+          selectManager()
+        ]
       }
     ])
     .then((answer) => {
+      console.log(allRoles)
+      let roleId = allRoles.indexOf(answer.role) + 1;
+      console.log(roleId)
       connection.query(
         'INSERT INTO employee SET ?', {
           first_name: answer.f_name,
           last_name: answer.l_name,
-          role_id: answer.role_id,
+          role_id: roleId,
           manager_id: answer.manager_id,
         },
         (err) => {
@@ -169,15 +177,32 @@ connection.connect((err) => {
 });
 
 
-var roleArr = [];
+var allRoles = [];
 
 function selectRole() {
   connection.query("SELECT * FROM role", function (err, res) {
     if (err) throw err
     for (var i = 0; i < res.length; i++) {
-      roleArr.push(res[i].title);
+      allRoles.push(res[i].role_title);
     }
 
   })
-  return roleArr;
+  console.log(allRoles)
+  return allRoles;
+}
+
+
+var allManagers = [];
+
+function selectManager() {
+  connection.query("SELECT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;",
+  function (err, res) {
+    if (err) throw err
+    for (var i = 0; i < res.length; i++) {
+      allManagers.push(res[i].first_name);
+    }
+
+  })
+  console.log(allManagers)
+  return allManagers;
 }
