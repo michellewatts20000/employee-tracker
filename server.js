@@ -36,9 +36,12 @@ const start = () => {
       message: 'What would you like to do?',
       choices: [
         'View all employees',
-        'Add Employee',
-        'Update Employee',
-        'Delete Employee',
+        'View all employees by department',
+        'View all employees by manager',
+        'Add employee',
+        'Update employee role',
+        'Update employee manager',
+        'Delete employee',
         'Exit',
       ],
     })
@@ -48,15 +51,27 @@ const start = () => {
           viewEmployees();
           break;
 
-        case 'Add Employee':
+          case 'View all employees by department':
+          viewEmployees();
+          break;
+
+          case 'View all employees by manager':
+          viewEmployees();
+          break;
+
+        case 'Add employee':
           addEmployees();
           break;
 
-        case 'Update Employee':
+        case 'Update employee role':
           updateEmployee();
           break;
 
-          case 'Delete Employee':
+          case 'Update employee manager':
+            updateEmployee();
+            break;
+
+          case 'Delete employee':
           deleteEmployee();
           break;
 
@@ -128,8 +143,6 @@ if(answer.manager === "No Manager"){
       start();
     }
   );
-
-
 } else
     {
       
