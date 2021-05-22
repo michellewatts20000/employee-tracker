@@ -86,7 +86,11 @@ SELECT * FROM department;
 
 SELECT * FROM role;
 
+SELECT * FROM employee;
 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new password';
+
+flush privileges;
 
 SELECT CONCAT( e2.first_name, " ", e2.last_name ) AS Manager, e1.manager_id
 FROM employee e1

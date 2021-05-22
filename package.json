@@ -22,6 +22,7 @@
     "cfonts": "^2.9.2",
     "console.table": "^0.10.0",
     "dotenv": "^9.0.2",
+    "express": "^4.17.1",
     "inquirer": "^8.0.0",
     "mysql": "^2.18.1"
   },

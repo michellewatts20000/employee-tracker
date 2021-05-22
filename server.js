@@ -3,6 +3,8 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const CFonts = require('cfonts');
 // const viewEmployees = require('./functions/viewEmployees.js');
+// var db = require('./db');
+
 
 
 require('dotenv').config()
@@ -14,6 +16,9 @@ const connection = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 });
+
+
+
 
 // prompts inquirer to ask user what they want to do
 const welcome = () => {
@@ -304,3 +309,8 @@ const deleteEmployee = () => {
   })
 };
 
+
+
+
+
+// welcome();

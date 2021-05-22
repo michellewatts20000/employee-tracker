@@ -1,12 +1,5 @@
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
+var db = require('../db');
+var connection = require('connection');
 
 const viewEmployees = () => {
     // query the database for all employees
@@ -19,4 +12,10 @@ const viewEmployees = () => {
   }
 
 
-//   module.exports =  viewEmployees;
+  module.exports =  viewEmployees;
+
+  // connection.connect((err) => {
+  //   if (err) throw err;
+  //   // run the start function after the connection is made to prompt the user
+   
+  // });
