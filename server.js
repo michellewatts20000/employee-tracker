@@ -117,22 +117,22 @@ const updateEmployee = () => {
           type: 'rawlist',
           choices() {
             const choiceArray = [];
-            results.forEach(({ item_name }) => {
-              choiceArray.push(item_name);
+            results.forEach(({ first_name}) => {
+              choiceArray.push(first_name);
             });
             return choiceArray;
           },
           message: 'Which employee would you like to update?',
         },
         {
-          name: 'bid',
+          name: 'f_name',
           type: 'input',
-          message: 'How much would you like to bid?',
+          message: 'What is their first name?',
         },
       ])
       .then((answer) => {
         connection.query(
-          'INSERT INTO employee SET ?',
+          'UPDATE employee SET ? WHERE ',
           {
             first_name: answer.f_name,
             last_name: answer.l_name,
