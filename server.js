@@ -1,6 +1,10 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const CFonts = require('cfonts');
+// const viewEmployees = require('./functions/viewEmployees.js');
+
+
 require('dotenv').config()
 // MYSQL DB connection information
 const connection = mysql.createConnection({
@@ -12,6 +16,18 @@ const connection = mysql.createConnection({
 });
 
 // prompts inquirer to ask user what they want to do
+const welcome = () => {
+  CFonts.say('Employee|Tracker', {
+    font: 'simple',
+    align: 'left',
+    colors: ['yellow'],
+    env: 'node'
+
+  });
+  start()
+}
+
+
 const start = () => {
   inquirer
     .prompt({
@@ -22,6 +38,7 @@ const start = () => {
         'View all employees',
         'Add Employee',
         'Update Employee',
+        'Delete Employee',
         'Exit',
       ],
     })
@@ -37,6 +54,10 @@ const start = () => {
 
         case 'Update Employee':
           updateEmployee();
+          break;
+
+          case 'Delete Employee':
+          deleteEmployee();
           break;
 
         case 'Exit':
@@ -60,6 +81,7 @@ const viewEmployees = () => {
     start();
   })
 }
+
 
 
 const addEmployees = () => {
@@ -89,15 +111,36 @@ const addEmployees = () => {
       }
     ])
     .then((answer) => {
-      console.log(allRoles)
-      let roleId = allRoles.indexOf(answer.role) + 1;
+if(answer.manager === "No Manager"){
+  
+  let roleId = allRoles.indexOf(answer.role) + 1;
+ 
+  connection.query(
+    'INSERT INTO employee SET ?', {
+      first_name: answer.f_name,
+      last_name: answer.l_name,
+      role_id: roleId,
+
+    },
+    (err) => {
+      if (err) throw err;
+      console.log('Your employee was created successfully!');
+      start();
+    }
+  );
+
+
+} else
+    {
+      
+      let roleId2 = allRoles.indexOf(answer.role) + 1;
       let managerId = allManagers.indexOf(answer.manager) + 1;
-      console.log(roleId)
+      
       connection.query(
         'INSERT INTO employee SET ?', {
           first_name: answer.f_name,
           last_name: answer.l_name,
-          role_id: roleId,
+          role_id: roleId2,
           manager_id: managerId,
         },
         (err) => {
@@ -106,6 +149,7 @@ const addEmployees = () => {
           start();
         }
       );
+    }
     });
 };
 
@@ -141,12 +185,12 @@ const updateEmployee = () => {
         results.forEach((employee) => {
           if (employee.first_name === answer.choice) {
             chosenEmployee = employee;
-            console.log(chosenEmployee)
+          
           }
         });
 
 
-        console.log('answer', answer)
+        
         connection.query(
           "UPDATE employee SET first_name = ? WHERE first_name = ?",
           [answer.f_name, answer.choice],
@@ -168,7 +212,7 @@ const updateEmployee = () => {
 connection.connect((err) => {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
-  start();
+  welcome();
 });
 
 
@@ -182,7 +226,7 @@ function selectRole() {
     }
 
   })
-  console.log(allRoles)
+  
   return allRoles;
 }
 
@@ -191,16 +235,59 @@ var allManagers = [];
 
 function selectManager() {
   connection.query("SELECT DISTINCT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 INNER JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL;",
-  function (err, res) {
-    console.log("response" , res)
-    if (err) throw err
-    for (var i = 0; i < res.length; i++) {
-      allManagers.push(res[i].Manager);
-      console.log(res[i].Manager);
-      console.log("managers" , allManagers)
-    }
-
-  })
-  console.log("managers" , allManagers)
+    function (err, res) {
+    
+      if (err) throw err
+      for (var i = 0; i < res.length; i++) {
+        allManagers.push(res[i].Manager);
+      }
+      allManagers.push("No Manager");
+    })
   return allManagers;
 }
+
+
+
+const deleteEmployee = () => {
+  // query the database for all employees
+  connection.query('SELECT * FROM employee', (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt([{
+          name: 'choice',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({
+              first_name
+            }) => {
+              choiceArray.push(first_name);
+            });
+            return choiceArray;
+          },
+          message: 'Which employee would you like to delete?',
+        }
+      ])
+      .then((answer) => {
+        // get the information of the chosen item
+        let chosenEmployee;
+        results.forEach((employee) => {
+          if (employee.first_name === answer.choice) {
+            chosenEmployee = employee;
+          
+          }
+        });
+        connection.query(
+          "DELETE FROM employee WHERE first_name = ?",
+          [chosenEmployee.first_name],
+          (err) => {
+            if (err) throw err;
+            console.log('Your employee was successsfully deleted!');
+            start();
+          }
+        );
+
+      });
+  })
+};
+
