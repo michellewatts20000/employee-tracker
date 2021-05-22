@@ -117,7 +117,7 @@ const updateEmployee = () => {
             results.forEach(({
               first_name
             }) => {
-              choiceArray.push({ first_name, id });
+              choiceArray.push(first_name);
             });
             return choiceArray;
           },
@@ -130,17 +130,27 @@ const updateEmployee = () => {
         },
       ])
       .then((answer) => {
+        // get the information of the chosen item
+        let chosenEmployee;
+        results.forEach((employee) => {
+          if (employee.first_name === answer.choice) {
+            chosenEmployee = employee;
+            console.log(chosenEmployee)
+          }
+        });
+
+
         console.log('answer', answer)
         connection.query(
           "UPDATE employee SET first_name = ? WHERE first_name = ?",
-          [answer.f_name, answer.choice]
-        );
+          [answer.f_name, answer.choice],
           (err) => {
             if (err) throw err;
-            console.log('Your employee was created updated!');
+            console.log('Your employee was successsfully updated!');
             start();
           }
-    
+        );
+
       });
 
 
