@@ -85,10 +85,8 @@ const addEmployees = () => {
         name: 'manager_id',
         type: 'list',
         message: 'Who is their manager?',
-        choices: [
-          "No Manager",
+        choices: 
           selectManager()
-        ]
       }
     ])
     .then((answer) => {
@@ -195,8 +193,9 @@ function selectRole() {
 var allManagers = [];
 
 function selectManager() {
-  connection.query("SELECT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;",
+  connection.query("SELECT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 LEFT JOIN employee e2 ON e2.id = e1.manager_id;",
   function (err, res) {
+    console.log(res)
     if (err) throw err
     for (var i = 0; i < res.length; i++) {
       allManagers.push(res[i].first_name);
