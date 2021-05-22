@@ -65,18 +65,91 @@ const viewEmployees = () => {
 const addEmployees = () => {
   // inquirer prompt to ask for new employee details
   inquirer
-    .prompt({
-      name: 'action',
+    .prompt([
+      {
+      name: 'f_name',
       type: 'input',
       message: 'What is the first name of your new employee?',
-    })
+      },
+      {
+        name: 'l_name',
+        type: 'input',
+        message: 'What is their surname?',
+        },
+        {
+          name: 'role_id',
+          type: 'input',
+          message: 'What is their role ID?',
+          },
+          {
+            name: 'manager_id',
+            type: 'input',
+            message: 'What is their manager ID (hit enter if none)?',
+            }
+    ])
     .then((answer) => {
-      connection.query("INSERT INTO employee SET ?")
-      if (err) throw err;
-    })
+      connection.query(
+        'INSERT INTO employee SET ?',
+        {
+          first_name: answer.f_name,
+          last_name: answer.l_name,
+          role_id: answer.role_id,
+          manager_id: answer.manager_id,
+        },
+      (err) => {
+        if (err) throw err;
+        console.log('Your employee was created successfully!');
+        start();
+      }
+    );
+  });
+};
 
-  start();
 
+const updateEmployee = () => {
+  // query the database for all employees
+  connection.query('SELECT * FROM employee', (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: 'choice',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({ item_name }) => {
+              choiceArray.push(item_name);
+            });
+            return choiceArray;
+          },
+          message: 'Which employee would you like to update?',
+        },
+        {
+          name: 'bid',
+          type: 'input',
+          message: 'How much would you like to bid?',
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          'INSERT INTO employee SET ?',
+          {
+            first_name: answer.f_name,
+            last_name: answer.l_name,
+            role_id: answer.role_id,
+            manager_id: answer.manager_id,
+          },
+        (err) => {
+          if (err) throw err;
+          console.log('Your employee was created successfully!');
+          start();
+        }
+      );
+    });
+  
+
+
+  })
 }
 
 
