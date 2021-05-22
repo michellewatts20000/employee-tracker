@@ -82,7 +82,7 @@ const addEmployees = () => {
         choices: selectRole()
       },
       {
-        name: 'manager_id',
+        name: 'manager',
         type: 'list',
         message: 'Who is their manager?',
         choices: selectManager()
@@ -91,13 +91,14 @@ const addEmployees = () => {
     .then((answer) => {
       console.log(allRoles)
       let roleId = allRoles.indexOf(answer.role) + 1;
+      let managerId = allManagers.indexOf(answer.manager) + 1;
       console.log(roleId)
       connection.query(
         'INSERT INTO employee SET ?', {
           first_name: answer.f_name,
           last_name: answer.l_name,
           role_id: roleId,
-          manager_id: answer.manager_id,
+          manager_id: managerId,
         },
         (err) => {
           if (err) throw err;
@@ -189,13 +190,14 @@ function selectRole() {
 var allManagers = [];
 
 function selectManager() {
-  connection.query("SELECT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 LEFT JOIN employee e2 ON e2.id = e1.manager_id;",
+  connection.query("SELECT DISTINCT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 INNER JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL;",
   function (err, res) {
     console.log("response" , res)
     if (err) throw err
     for (var i = 0; i < res.length; i++) {
       allManagers.push(res[i].Manager);
       console.log(res[i].Manager);
+      console.log("managers" , allManagers)
     }
 
   })

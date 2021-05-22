@@ -78,8 +78,9 @@ VALUE ("Cheryl", "Ng", 4, 9);
 INSERT INTO employee (first_name, last_name, manager_id, role_id)
 VALUE ("Brian", "Grant", 1, 7);
 INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE ("Tom", "Churchill", 1, 6);
-
+VALUE ("Connie", "Star", 2, 6);
+INSERT INTO employee (first_name, last_name, manager_id, role_id)
+VALUE ("Brett", "Rover", 3, 6);
 
 SELECT * FROM department;
 
