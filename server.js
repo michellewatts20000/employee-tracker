@@ -65,44 +65,42 @@ const viewEmployees = () => {
 const addEmployees = () => {
   // inquirer prompt to ask for new employee details
   inquirer
-    .prompt([
-      {
-      name: 'f_name',
-      type: 'input',
-      message: 'What is the first name of your new employee?',
+    .prompt([{
+        name: 'f_name',
+        type: 'input',
+        message: 'What is the first name of your new employee?',
       },
       {
         name: 'l_name',
         type: 'input',
         message: 'What is their surname?',
-        },
-        {
-          name: 'role_id',
-          type: 'input',
-          message: 'What is their role ID?',
-          },
-          {
-            name: 'manager_id',
-            type: 'input',
-            message: 'What is their manager ID (hit enter if none)?',
-            }
+      },
+      {
+        name: 'role_id',
+        type: 'input',
+        message: 'What is their role ID?',
+      },
+      {
+        name: 'manager_id',
+        type: 'input',
+        message: 'What is their manager ID (hit enter if none)?',
+      }
     ])
     .then((answer) => {
       connection.query(
-        'INSERT INTO employee SET ?',
-        {
+        'INSERT INTO employee SET ?', {
           first_name: answer.f_name,
           last_name: answer.l_name,
           role_id: answer.role_id,
           manager_id: answer.manager_id,
         },
-      (err) => {
-        if (err) throw err;
-        console.log('Your employee was created successfully!');
-        start();
-      }
-    );
-  });
+        (err) => {
+          if (err) throw err;
+          console.log('Your employee was created successfully!');
+          start();
+        }
+      );
+    });
 };
 
 
@@ -111,14 +109,15 @@ const updateEmployee = () => {
   connection.query('SELECT * FROM employee', (err, results) => {
     if (err) throw err;
     inquirer
-      .prompt([
-        {
+      .prompt([{
           name: 'choice',
           type: 'rawlist',
           choices() {
             const choiceArray = [];
-            results.forEach(({ first_name}) => {
-              choiceArray.push(first_name);
+            results.forEach(({
+              first_name
+            }) => {
+              choiceArray.push({ first_name, id });
             });
             return choiceArray;
           },
@@ -131,22 +130,19 @@ const updateEmployee = () => {
         },
       ])
       .then((answer) => {
+        console.log('answer', answer)
         connection.query(
-          'UPDATE employee SET ? WHERE ',
-          {
-            first_name: answer.f_name,
-            last_name: answer.l_name,
-            role_id: answer.role_id,
-            manager_id: answer.manager_id,
-          },
-        (err) => {
-          if (err) throw err;
-          console.log('Your employee was created successfully!');
-          start();
-        }
-      );
-    });
-  
+          "UPDATE employee SET first_name = ? WHERE first_name = ?",
+          [answer.f_name, answer.choice]
+        );
+          (err) => {
+            if (err) throw err;
+            console.log('Your employee was created updated!');
+            start();
+          }
+    
+      });
+
 
 
   })
@@ -161,3 +157,17 @@ connection.connect((err) => {
   // run the start function after the connection is made to prompt the user
   start();
 });
+
+
+var roleArr = [];
+
+function selectRole() {
+  connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err
+    for (var i = 0; i < res.length; i++) {
+      roleArr.push(res[i].title);
+    }
+
+  })
+  return roleArr;
+}
