@@ -85,8 +85,7 @@ const addEmployees = () => {
         name: 'manager_id',
         type: 'list',
         message: 'Who is their manager?',
-        choices: 
-          selectManager()
+        choices: selectManager()
       }
     ])
     .then((answer) => {
@@ -158,11 +157,8 @@ const updateEmployee = () => {
         );
 
       });
-
-
-
   })
-}
+};
 
 
 
@@ -195,13 +191,14 @@ var allManagers = [];
 function selectManager() {
   connection.query("SELECT CONCAT( e2.first_name, ' ', e2.last_name ) AS Manager, e1.manager_id FROM employee e1 LEFT JOIN employee e2 ON e2.id = e1.manager_id;",
   function (err, res) {
-    console.log(res)
+    console.log("response" , res)
     if (err) throw err
     for (var i = 0; i < res.length; i++) {
-      allManagers.push(res[i].first_name);
+      allManagers.push(res[i].Manager);
+      console.log(res[i].Manager);
     }
 
   })
-  console.log(allManagers)
+  console.log("managers" , allManagers)
   return allManagers;
 }
