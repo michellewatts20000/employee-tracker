@@ -214,9 +214,8 @@ const updateEmployee = () => {
     
         
         connection.query(
-       
-          "UPDATE employee first_name = ? SET role_id = ? WHERE role_id = ?",
-          [chosenEmployee.first_name, roleId, roleId],
+          "SELECT first_name, last_name, role_id FROM employee WHERE first_name = ? UPDATE employee SET role_id ? WHERE first_name =",
+          [roleId, chosenEmployee.first_name, chosenEmployee.id, chosenEmployee.first_name],
           (err) => {
             if (err) throw err;
             console.log('Your employee was successsfully updated!');
