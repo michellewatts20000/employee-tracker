@@ -58,7 +58,7 @@ const start = () => {
           break;
 
         case 'View all employees by manager':
-          viewEmployees();
+          viewEmployeesManager();
           break;
 
         case 'Add employee':
@@ -291,8 +291,6 @@ const deleteEmployee = () => {
         results.forEach((employee) => {
           if (employee.full_name === answer.choice) {
             chosenEmployee = employee;
-
-
           }
         });
         connection.query(
@@ -310,52 +308,44 @@ const deleteEmployee = () => {
 };
 
 
-// var allDepartments = [];
-
-// function selectDepartment() {
-//   connection.query("SELECT * FROM department", function (err, res) {
-//     if (err) throw err
-//     for (var i = 0; i < res.length; i++) {
-//       allDepartments.push(res[i].dept_name);
-
-//     }
-
-//   })
-// console.log(allDepartments)
-//   return allDepartments;
-
-// }
 
 
 
 const viewDepartment = () => {
-  // query the database for all employees
-  connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
-    if (err) throw err;
-    inquirer
-      .prompt([{
-          name: 'choice',
-          type: 'rawlist',
-          choices() {
-            const choiceArray = [];
-            results.forEach(({
-              Department
-            }) => {
-              choiceArray.push(Department);
-            });
-            return choiceArray;
-          },
-          message: 'Which department would you like to see?',
-        }
+    // query the database for all employees
+    connection.query('SELECT * FROM department', (err, results) => {
+        if (err) throw err;
+        console.log(results)
+        inquirer
+          .prompt([{
+              name: 'choice',
+              type: 'rawlist',
+              choices() {
+                const choiceArray = [];
+                results.forEach(({
+                  dept_name
+                }) => {
+                  choiceArray.push(dept_name);
+                });
+                return choiceArray;
+              },
+              message: 'Which department would you like to see?',
+            }
 
-      ])
-      .then((answer) => {
-        // get the information of the chosen item
+          ])
+          .then((answer) => {
 
-      });
-    // console.log("employee.first_name" , employee.first_name);
-    // console.log("chosenEmployee", chosenEmployee);
+              connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE dept_name = "Sales"',(err, results) => {
+               
+                console.table(results)
+              }
+              )
+             
+          })
 
-  });
 
-}
+          });
+
+    }
+
+
