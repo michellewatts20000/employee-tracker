@@ -272,7 +272,7 @@ function selectManager() {
 
 const deleteEmployee = () => {
   // query the database for all employees
-  connection.query("SELECT id, role_id, first_name, CONCAT( first_name, ' ', last_name ) AS full_name FROM employee", (err, results) => {
+  connection.query("SELECT id, role_id, first_name, last_name, CONCAT( first_name, ' ', last_name ) AS full_name FROM employee", (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([{
