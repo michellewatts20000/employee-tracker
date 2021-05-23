@@ -214,8 +214,8 @@ const updateEmployee = () => {
     
         
         connection.query(
-          "SELECT first_name, last_name, role_id FROM employee WHERE first_name = ? UPDATE employee SET role_id ? WHERE first_name =",
-          [roleId, chosenEmployee.first_name, chosenEmployee.id, chosenEmployee.first_name],
+          "UPDATE employee SET role_id = ? WHERE id = ?",
+          [roleId, chosenEmployee.id],
           (err) => {
             if (err) throw err;
             console.log('Your employee was successsfully updated!');
@@ -272,7 +272,7 @@ function selectManager() {
 
 const deleteEmployee = () => {
   // query the database for all employees
-  connection.query('SELECT * FROM employee', (err, results) => {
+  connection.query("SELECT id, role_id, first_name, CONCAT( first_name, ' ', last_name ) AS full_name FROM employee", (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([{
@@ -281,9 +281,9 @@ const deleteEmployee = () => {
           choices() {
             const choiceArray = [];
             results.forEach(({
-              first_name
+              full_name
             }) => {
-              choiceArray.push(first_name);
+              choiceArray.push(full_name);
             });
             return choiceArray;
           },
@@ -294,14 +294,17 @@ const deleteEmployee = () => {
         // get the information of the chosen item
         let chosenEmployee;
         results.forEach((employee) => {
-          if (employee.first_name === answer.choice) {
+          if (employee.full_name === answer.choice) {
             chosenEmployee = employee;
+
+            console.log(chosenEmployee)
+            console.log(chosenEmployee.id)
           
           }
         });
         connection.query(
-          "DELETE FROM employee WHERE first_name = ?",
-          [chosenEmployee.first_name],
+          "DELETE FROM employee WHERE id = ?",
+          [chosenEmployee.id],
           (err) => {
             if (err) throw err;
             console.log('Your employee was successsfully deleted!');
