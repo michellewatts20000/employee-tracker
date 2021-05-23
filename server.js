@@ -38,12 +38,13 @@ const start = () => {
       message: 'What would you like to do?',
       choices: [
         'View all employees',
-        'View all employees by department',
-        'View all employees by manager',
+        'View employees by department',
+        'View employees by role',
+        'View employees by manager',
         'Add employee',
         'Add department',
+        'Add role',
         'Update employee role',
-        'Update employee manager',
         'Delete employee',
         'Exit',
       ],
@@ -54,11 +55,15 @@ const start = () => {
           viewEmployees();
           break;
 
-        case 'View all employees by department':
+        case 'View employees by department':
           viewDepartment();
           break;
 
-        case 'View all employees by manager':
+          case 'View employees by role':
+          viewRoles();
+          break;
+
+        case 'View employees by manager':
           viewEmployeesManager();
           break;
 
@@ -70,12 +75,12 @@ const start = () => {
           addDepartment();
           break;
 
-        case 'Update employee role':
-          updateEmployeeRole();
+        case 'Add role':
+          addRole();
           break;
 
-        case 'Update employee manager':
-          updateEmployee();
+        case 'Update employee role':
+          updateEmployeeRole();
           break;
 
         case 'Delete employee':
@@ -206,13 +211,11 @@ const updateEmployeeRole = () => {
         results.forEach((employee) => {
           if (employee.full_name === answer.choice) {
             chosenEmployee = employee;
-            console.log(chosenEmployee)
+            
           }
 
         });
-        // console.log("employee.first_name" , employee.first_name);
-        console.log("chosenEmployee", chosenEmployee);
-
+       
 
         connection.query(
           "UPDATE employee SET role_id = ? WHERE id = ?",
@@ -252,6 +255,21 @@ function selectRole() {
 
   return allRoles;
 }
+
+var allDepartments = [];
+
+function selectDepartment() {
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err
+    for (var i = 0; i < res.length; i++) {
+      allDepartments.push(res[i].dept_name);
+    }
+
+  })
+
+  return allDepartments;
+}
+
 
 
 var allManagers = [];
@@ -332,7 +350,7 @@ const viewDepartment = () => {
             }) => {
               choiceArray.push(dept_name);
             });
-            console.log(choiceArray)
+            
             return choiceArray;
           },
           message: 'Which department would you like to see?',
@@ -357,70 +375,49 @@ const viewDepartment = () => {
 }
 
 
-// const viewEmployeesManager = () => {
-//   // query the database for all employees
-//   connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", e1.manager_id, role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL', (err, results) => {
-//     if (err) throw err;
-//     console.log(results)
-//     inquirer
-//       .prompt([{
-//           name: 'choice',
-//           type: 'rawlist',
-//           choices() {
-//             const choiceArray = [];
-//             results.forEach(({
-//               Manager
-
-//             }) => {
-//               choiceArray.push(Manager);
-//               console.log(Manager)
-//             });
-//             return choiceArray;
-//           },
-//           message: 'Which manager`s team would you like to see?',
-//         }
-
-//       ])
-//       .then((answer) => {
-
-//         connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE Manager = ?', [answer.choice], (err, results) => {
-//           console.log(answer.choice)
-//           console.log(results)
-//           console.table(results)
-//           start();
-//         })
-
-//       })
 
 
-//   });
 
-// }
-
-selectManager()
 
 const viewEmployeesManager = () => {
-  selectManager().then
-  inquirer
-    .prompt([{
-      name: 'manager',
-      type: 'list',
-      message: 'Which manager`s team would you like to see?',
-      choices: selectManager()
-    }])
-    .then((answer) => {
+  connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", e1.manager_id, role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL', (err, results) => {
+    if (err) throw err;
+    inquirer
+      .prompt([{
+          name: 'choice',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({
+              Manager
+            }) => {
+              choiceArray.push(Manager);
+            });
+            return choiceArray;
+          },
+          message: 'Which manager`s team would you like to see?',
+        }
 
-      connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE Manager = ?', [answer.choice], console.log(answer.choice),(err, results) => {
-        console.log(answer)
-        console.log(results)
-        console.table(results)
-        start();
+      ])
+
+      .then((answer) => {
+
+        let chosenEmployee;
+        results.forEach((employee) => {
+          if (employee.Manager === answer.choice) {
+            chosenEmployee = employee;
+          }
+        });
+
+        connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id = ?', [chosenEmployee.manager_id], (err, results) => {
+          console.table(results)
+
+
+          start();
+        })
       })
-
-    })
-
-
-}
+  })
+};
 
 
 
@@ -447,3 +444,95 @@ const addDepartment = () => {
 
     });
 };
+
+
+const addRole = () => {
+  connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_id, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id', (err, results) => {
+    if (err) throw err;
+    // inquirer prompt to ask for new employee details
+    inquirer
+      .prompt([{
+          name: 'role_name',
+          type: 'input',
+          message: 'What is the name of your new role?',
+        },
+        {
+          name: 'salary',
+          type: 'input',
+          message: 'What is the salary of your new role?',
+        },
+        {
+          name: 'department',
+          type: 'list',
+          message: 'What department is it in?',
+          choices: selectDepartment(),
+        },
+
+      ])
+      .then((answer) => {
+        let chosenEmployee;
+        results.forEach((employee) => {
+          if (employee.Department === answer.department) {
+            chosenEmployee = employee;
+
+          }
+        });
+       
+        connection.query(
+          'INSERT INTO role SET ?', {
+            role_title: answer.role_name,
+            salary: answer.salary,
+            dept_id: chosenEmployee.dept_id,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log('Your role was created successfully!');
+            start();
+          }
+        );
+
+
+      });
+  })
+};
+
+
+const viewRoles = () => {
+  // query the database for all employees
+  connection.query('SELECT * FROM role', (err, results) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt([{
+          name: 'choice',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({
+              role_title
+            }) => {
+              choiceArray.push(role_title);
+            });
+           
+            return choiceArray;
+          },
+          message: 'Which role would you like to see?',
+        }
+
+      ])
+
+
+      .then((answer) => {
+
+        connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE role_title = ?', [answer.choice], (err, results) => {
+
+          console.table(results)
+          start();
+        })
+
+      })
+
+
+  });
+
+}
