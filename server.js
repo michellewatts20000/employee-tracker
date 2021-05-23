@@ -310,49 +310,27 @@ const deleteEmployee = () => {
 };
 
 
-var allDepartments = [];
+// var allDepartments = [];
 
-function selectDepartment() {
-  connection.query("SELECT * FROM department", function (err, res) {
-    if (err) throw err
-    for (var i = 0; i < res.length; i++) {
-      allDepartments.push(res[i].dept_name);
+// function selectDepartment() {
+//   connection.query("SELECT * FROM department", function (err, res) {
+//     if (err) throw err
+//     for (var i = 0; i < res.length; i++) {
+//       allDepartments.push(res[i].dept_name);
 
-    }
+//     }
 
-  })
+//   })
+// console.log(allDepartments)
+//   return allDepartments;
 
-  return allDepartments;
-
-}
-
-
-// const viewDepartment = () => {
-//   // inquirer prompt to ask for new employee details
-//   selectDepartment()
-
-//   inquirer
-//   .prompt([{
-//     name: 'role',
-//     type: 'list',
-//     message: 'What department?',
-//     choices: selectDepartment()
-//    }])
-
-//     .then((answer) => {
-// connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
-
-//         console.table(results);
-//         if (err) throw err;
-//         start();
-//       })
-//     })
 // }
+
 
 
 const viewDepartment = () => {
   // query the database for all employees
-  connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_id, role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
+  connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
     if (err) throw err;
     inquirer
       .prompt([{
