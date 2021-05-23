@@ -41,6 +41,7 @@ const start = () => {
         'View all employees by department',
         'View all employees by manager',
         'Add employee',
+        'Add department',
         'Update employee role',
         'Update employee manager',
         'Delete employee',
@@ -63,6 +64,10 @@ const start = () => {
 
         case 'Add employee':
           addEmployees();
+          break;
+
+        case 'Add department':
+          addDepartment();
           break;
 
         case 'Update employee role':
@@ -352,58 +357,93 @@ const viewDepartment = () => {
 }
 
 
+// const viewEmployeesManager = () => {
+//   // query the database for all employees
+//   connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", e1.manager_id, role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL', (err, results) => {
+//     if (err) throw err;
+//     console.log(results)
+//     inquirer
+//       .prompt([{
+//           name: 'choice',
+//           type: 'rawlist',
+//           choices() {
+//             const choiceArray = [];
+//             results.forEach(({
+//               Manager
+
+//             }) => {
+//               choiceArray.push(Manager);
+//               console.log(Manager)
+//             });
+//             return choiceArray;
+//           },
+//           message: 'Which manager`s team would you like to see?',
+//         }
+
+//       ])
+//       .then((answer) => {
+
+//         connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE Manager = ?', [answer.choice], (err, results) => {
+//           console.log(answer.choice)
+//           console.log(results)
+//           console.table(results)
+//           start();
+//         })
+
+//       })
+
+
+//   });
+
+// }
+
+selectManager()
+
 const viewEmployeesManager = () => {
-  // query the database for all employees
-  connection.query('SELECT DISTINCT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", e1.manager_id, role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE e1.manager_id IS NOT NULL', (err, results) => {
-    if (err) throw err;
-    console.log(results)
-    inquirer
-      .prompt([{
-          name: 'choice',
-          type: 'rawlist',
-          choices() {
-            const choiceArray = [];
-            results.forEach(({
-              Manager
-              
-            }) => {
-              choiceArray.push(Manager);
-              console.log(Manager)
-            });
-            return choiceArray;
-          },
-          message: 'Which manager`s team would you like to see?',
-        }
+  selectManager().then
+  inquirer
+    .prompt([{
+      name: 'manager',
+      type: 'list',
+      message: 'Which manager`s team would you like to see?',
+      choices: selectManager()
+    }])
+    .then((answer) => {
 
-      ])
-      .then((answer) => {
-
-        connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE Manager = ?', [answer.choice], (err, results) => {
-          console.log(answer.choice)
-          console.log(results)
-          console.table(results)
-          start();
-        })
-
+      connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id WHERE Manager = ?', [answer.choice], console.log(answer.choice),(err, results) => {
+        console.log(answer)
+        console.log(results)
+        console.table(results)
+        start();
       })
 
+    })
 
-  });
 
 }
 
 
-// const viewEmployeesManager = () => {
-//   selectManager().then
-//   inquirer
-//   .prompt([{
-   
-   
-//       name: 'manager',
-//       type: 'list',
-//       message: 'Which manager`s team would you like to see?',
-//       choices: selectManager()
-//     }
-//   ])
 
-// }
+const addDepartment = () => {
+  // inquirer prompt to ask for new employee details
+  inquirer
+    .prompt([{
+      name: 'dept_name',
+      type: 'input',
+      message: 'What is the name of your new department?',
+    }, ])
+    .then((answer) => {
+      connection.query(
+        'INSERT INTO department SET ?', {
+          dept_name: answer.dept_name,
+        },
+        (err) => {
+          if (err) throw err;
+          console.log('Your department was created successfully!');
+          start();
+        }
+      );
+
+
+    });
+};
