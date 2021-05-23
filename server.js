@@ -6,7 +6,6 @@ const CFonts = require('cfonts');
 // var db = require('./db');
 
 
-
 require('dotenv').config()
 // MYSQL DB connection information
 const connection = mysql.createConnection({
@@ -16,8 +15,6 @@ const connection = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
 });
-
-
 
 
 // prompts inquirer to ask user what they want to do
@@ -294,8 +291,7 @@ const deleteEmployee = () => {
         results.forEach((employee) => {
           if (employee.full_name === answer.choice) {
             chosenEmployee = employee;
-            console.log(chosenEmployee)
-            console.log(chosenEmployee.id)
+
 
           }
         });
@@ -314,37 +310,6 @@ const deleteEmployee = () => {
 };
 
 
-const viewDepartment = () => {
-  inquirer
-    .prompt([{
-      
-        name: 'role',
-        type: 'list',
-        message: 'What department?',
-        choices: selectDepartment()
-     
-    }])
-    .then((answer) => {
-
-      let chosenEmployee;
-
-      results.forEach((employee) => {
-        if (employee.dept_name === answer.choice) {
-          chosenEmployee = employee;
-          console.log(chosenEmployee)
-        }
-
-        connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
-
-          console.table(results);
-          if (err) throw err;
-          start();
-        })
-      })
-    })
-};
-
-
 var allDepartments = [];
 
 function selectDepartment() {
@@ -352,11 +317,35 @@ function selectDepartment() {
     if (err) throw err
     for (var i = 0; i < res.length; i++) {
       allDepartments.push(res[i].dept_name);
-      console.log(allDepartments)
+
     }
 
   })
-  console.log(allDepartments)
+
   return allDepartments;
 
+}
+
+
+const viewDepartment = () => {
+  // inquirer prompt to ask for new employee details
+  let functionA = selectDepartment();
+
+  inquirer
+    .prompt([{
+        name: 'role',
+        type: 'list',
+        message: 'What department?',
+        choices: functionA
+      },
+
+    ])
+    .then((answer) => {
+      connection.query('SELECT CONCAT( e1.first_name, " ", e1.last_name ) AS "Employee Name", role_title AS Role, dept_name AS Department, salary AS Salary, CONCAT( e2.first_name, " ", e2.last_name ) AS Manager FROM employee e1 INNER JOIN role ON role.id = e1.role_id INNER JOIN department ON department.id = role.dept_id LEFT JOIN employee e2 ON e2.id = e1.manager_id;', (err, results) => {
+
+        console.table(results);
+        if (err) throw err;
+        start();
+      })
+    })
 }
