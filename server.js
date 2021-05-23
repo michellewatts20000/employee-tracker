@@ -151,14 +151,14 @@ if(answer.manager === "No Manager"){
 } else
     {
       
-      let roleId2 = allRoles.indexOf(answer.role) + 1;
+      let roleId = allRoles.indexOf(answer.role) + 1;
       let managerId = allManagers.indexOf(answer.manager) + 1;
       
       connection.query(
         'INSERT INTO employee SET ?', {
           first_name: answer.f_name,
           last_name: answer.l_name,
-          role_id: roleId2,
+          role_id: roleId,
           manager_id: managerId,
         },
         (err) => {
@@ -189,29 +189,34 @@ const updateEmployee = () => {
             });
             return choiceArray;
           },
-          message: 'Which employee would you like to update?',
+          message: 'Which employee`s role would you like to update?',
         },
         {
-          name: 'f_name',
-          type: 'input',
-          message: 'What is their first name?',
-        },
+          name: 'role',
+          type: 'list',
+          message: 'What is their new role?',
+          choices: selectRole()
+        }
       ])
       .then((answer) => {
         // get the information of the chosen item
         let chosenEmployee;
+        let roleId = allRoles.indexOf(answer.role) + 1;
         results.forEach((employee) => {
           if (employee.first_name === answer.choice) {
             chosenEmployee = employee;
-          
+          console.log(chosenEmployee)
           }
+          
         });
-
-
+        // console.log("employee.first_name" , employee.first_name);
+        console.log("chosenEmployee" , chosenEmployee);
+    
         
         connection.query(
-          "UPDATE employee SET first_name = ? WHERE first_name = ?",
-          [answer.f_name, answer.choice],
+       
+          "UPDATE employee first_name = ? SET role_id = ? WHERE role_id = ?",
+          [chosenEmployee.first_name, roleId, roleId],
           (err) => {
             if (err) throw err;
             console.log('Your employee was successsfully updated!');
@@ -312,5 +317,3 @@ const deleteEmployee = () => {
 
 
 
-
-// welcome();
