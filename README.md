@@ -27,6 +27,9 @@
   ## Contribute
   email me on watts.e.michelle@gmail.com
 
+  ## Video
+  [watch a video demo of the app](https://drive.google.com/file/d/1Kr7f-tfXbp1OOJ3-Z0KLgfoqRrpFneYa/view)
+  
   
 
   ## License

@@ -132,7 +132,7 @@ const viewDepartments = () => {
 
 const viewRole = () => {
   // query the database for all employees
-  connection.query('SELECT role_title AS Roles FROM role', (err, results) => {
+  connection.query('SELECT role_title AS Roles, salary AS Salary, dept_name AS department FROM role INNER JOIN Department ON department.id = role.dept_id ', (err, results) => {
 
     console.table(results);
     if (err) throw err;
