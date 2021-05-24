@@ -38,6 +38,8 @@ const start = () => {
       message: 'What would you like to do?',
       choices: [
         'View all employees',
+        'View departments',
+        'View roles',
         'View employees by department',
         'View employees by role',
         'View employees by manager',
@@ -53,6 +55,14 @@ const start = () => {
       switch (answer.action) {
         case 'View all employees':
           viewEmployees();
+          break;
+
+          case 'View departments':
+          viewDepartments();
+          break;
+
+          case 'View roles':
+          viewRole();
           break;
 
         case 'View employees by department':
@@ -109,6 +119,26 @@ const viewEmployees = () => {
   })
 }
 
+
+const viewDepartments = () => {
+  // query the database for all employees
+  connection.query('SELECT dept_name AS Departments FROM department', (err, results) => {
+
+    console.table(results);
+    if (err) throw err;
+    start();
+  })
+}
+
+const viewRole = () => {
+  // query the database for all employees
+  connection.query('SELECT role_title AS Roles FROM role', (err, results) => {
+
+    console.table(results);
+    if (err) throw err;
+    start();
+  })
+}
 
 
 const addEmployees = () => {
